@@ -29,15 +29,17 @@ function M.highlight_usages(bufnr)
   local def_node, scope = locals.find_definition(node_at_point, bufnr)
   local usages = locals.find_usages(def_node, scope, bufnr)
 
+  if #usages < 2 then
+    return
+  end
+
   for _, usage_node in ipairs(usages) do
-    if usage_node ~= node_at_point and usage_node ~= def_node then
+    if usage_node ~= def_node then
       ts_utils.highlight_node(usage_node, bufnr, usage_namespace, "TSDefinitionUsage")
     end
   end
 
-  if def_node ~= node_at_point then
-    ts_utils.highlight_node(def_node, bufnr, usage_namespace, "TSDefinition")
-  end
+  ts_utils.highlight_node(def_node, bufnr, usage_namespace, "TSDefinition")
 end
 
 function M.has_highlights(bufnr)
